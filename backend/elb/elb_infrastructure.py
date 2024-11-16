@@ -3,29 +3,44 @@ from aws_cdk import (
     aws_elasticloadbalancingv2 as elbv2,
 )
 from constructs import Construct
-from backend.asg.asg_infrastructure import AutoScalingGroup
+from backend.asg.asg_infrastructure import AutoScalingGroupInfra
 
-class LoadBalancer(Construct):
 
-    def __init__(self, scope: Construct, construct_id: str, *, vpc: ec2.Vpc) -> None:
+class LoadBalancerInfra(Construct):
+
+    def __init__(
+        self,
+        scope: Construct,
+        construct_id: str,
+        *,
+        load_balancer_config: dict,
+        vpc: ec2.Vpc
+    ) -> None:
         super().__init__(scope, construct_id)
 
         # Create the load balancer in the DemoVPC
         load_balancer = elbv2.ApplicationLoadBalancer(
             self,
-            "DemoLoadBalancer",
+            load_balancer_config["load_balancer_id"],
             vpc=vpc,
             internet_facing=True,
         )
 
         # Add listener and open up the load balancer's security group to the world.
         listener = load_balancer.add_listener(
-            "Listener",
+            load_balancer_config["listener_id"],
             port=80,
-            protocol= elbv2.ApplicationProtocol.HTTP,
+            protocol=elbv2.ApplicationProtocol.HTTP,
             open=True,
         )
 
         # Create an AutoScaling group and add it to the load balancing
-        asg = AutoScalingGroup(self, "DemoASG", vpc=vpc)
-        listener.add_targets("ApplicationFleet", port=80, targets=[asg.asg])
+        asg = AutoScalingGroupInfra(
+            self,
+            load_balancer_config["asg_infra"]["asg_infra_id"],
+            asg_config=load_balancer_config["asg_infra"]["asg_infra_config"],
+            vpc=vpc,
+        )
+        listener.add_targets(
+            load_balancer_config["target_group_id"], port=80, targets=[asg.asg]
+        )

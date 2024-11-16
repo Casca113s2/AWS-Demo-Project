@@ -6,9 +6,9 @@ from aws_cdk import (
 from constructs import Construct
 
 
-class AutoScalingGroup(Construct):
+class AutoScalingGroupInfra(Construct):
 
-    def __init__(self, scope: Construct, construct_id: str, *, vpc: ec2.Vpc) -> None:
+    def __init__(self, scope: Construct, construct_id: str, *, asg_config: dict, vpc: ec2.Vpc) -> None:
         super().__init__(scope, construct_id)
 
         # Define the IAM role for the EC2 instances to allow Session Manager access
@@ -22,13 +22,13 @@ class AutoScalingGroup(Construct):
         # Define the Auto Scaling Group
         self.asg = autoscaling.AutoScalingGroup(
             self,
-            "DemoAutoScalingGroup",
+            asg_config["asg_id"],
             vpc=vpc,
-            instance_type=ec2.InstanceType("t3.micro"),
+            instance_type=ec2.InstanceType(asg_config["instance_type"]),
             machine_image=ec2.AmazonLinuxImage(),
-            desired_capacity=2,
-            min_capacity=1,
-            max_capacity=3,
+            desired_capacity=asg_config["desired_capacity"],
+            min_capacity=asg_config["min_capacity"],
+            max_capacity=asg_config["max_capacity"],
             role=role
         )
 

@@ -1,0 +1,52 @@
+{
+    "environment": {
+        "account": "259642033136",
+        "region": "ap-southeast-1"
+    },
+    "backend": {
+        "backend_id": "TestBackend",
+        "backend_config": {
+            "network_infra": {
+                "network_infra_id": "TestNetWorkInfra",
+                "network_infra_config": {
+                    "vpc": {
+                        "vpc_id": "TestVpc",
+                        "cidr": "10.0.0.0/16",
+                        "max_azs": 3,
+                        "nat_gateways": 1,
+                        "subnet_configuration": [
+                            {
+                                "name": "TestPublicSubnet",
+                                "subnet_type": "PUBLIC",
+                                "cidr_mask": 24
+                            },
+                            {
+                                "name": "TestPrivateSubnet",
+                                "subnet_type": "PRIVATE_WITH_EGRESS",
+                                "cidr_mask": 24
+                            }
+                        ]
+                    }
+                }
+            },
+            "load_balancer_infra": {
+                "load_balancer_infra_id": "TestLoadBalancerInfra",
+                "load_balancer_infra_config": {
+                    "load_balancer_id": "TestLoadBalancer",
+                    "listener_id": "TestListener",
+                    "target_group_id": "TestApplicationFleet",
+                    "asg_infra": {
+                        "asg_infra_id": "TestAutoScalingGroup",
+                        "asg_infra_config": {
+                            "asg_id": "TestAutoScalingGroup",
+                            "instance_type": "t3.micro",
+                            "desired_capacity": 2,
+                            "min_capacity": 1,
+                            "max_capacity": 3
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

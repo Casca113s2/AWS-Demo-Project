@@ -1,0 +1,52 @@
+{
+    "environment": {
+        "account": "259642033136",
+        "region": "ap-southeast-1"
+    },
+    "backend": {
+        "backend_id": "ProdBackend",
+        "backend_config": {
+            "network_infra": {
+                "network_infra_id": "ProdNetWorkInfra",
+                "network_infra_config": {
+                    "vpc": {
+                        "vpc_id": "ProdVpc",
+                        "cidr": "10.0.0.0/16",
+                        "max_azs": 3,
+                        "nat_gateways": 1,
+                        "subnet_configuration": [
+                            {
+                                "name": "ProdPublicSubnet",
+                                "subnet_type": "PUBLIC",
+                                "cidr_mask": 24
+                            },
+                            {
+                                "name": "ProdPrivateSubnet",
+                                "subnet_type": "PRIVATE_WITH_EGRESS",
+                                "cidr_mask": 24
+                            }
+                        ]
+                    }
+                }
+            },
+            "load_balancer_infra": {
+                "load_balancer_infra_id": "ProdLoadBalancerInfra",
+                "load_balancer_infra_config": {
+                    "load_balancer_id": "ProdLoadBalancer",
+                    "listener_id": "ProdListener",
+                    "target_group_id": "ProdApplicationFleet",
+                    "asg_infra": {
+                        "asg_infra_id": "ProdAutoScalingGroup",
+                        "asg_infra_config": {
+                            "asg_id": "ProdAutoScalingGroup",
+                            "instance_type": "t3.micro",
+                            "desired_capacity": 2,
+                            "min_capacity": 1,
+                            "max_capacity": 3
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

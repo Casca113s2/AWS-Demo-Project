@@ -1,0 +1,52 @@
+{
+    "environment": {
+        "account": "259642033136",
+        "region": "ap-southeast-1"
+    },
+    "backend": {
+        "backend_id": "DevBackend",
+        "backend_config": {
+            "network_infra": {
+                "network_infra_id": "DevNetWorkInfra",
+                "network_infra_config": {
+                    "vpc": {
+                        "vpc_id": "DevVpc",
+                        "cidr": "10.0.0.0/16",
+                        "max_azs": 3,
+                        "nat_gateways": 1,
+                        "subnet_configuration": [
+                            {
+                                "name": "DevPublicSubnet",
+                                "subnet_type": "PUBLIC",
+                                "cidr_mask": 24
+                            },
+                            {
+                                "name": "DevPrivateSubnet",
+                                "subnet_type": "PRIVATE_WITH_EGRESS",
+                                "cidr_mask": 24
+                            }
+                        ]
+                    }
+                }
+            },
+            "load_balancer_infra": {
+                "load_balancer_infra_id": "DevLoadBalancerInfra",
+                "load_balancer_infra_config": {
+                    "load_balancer_id": "DevLoadBalancer",
+                    "listener_id": "DevListener",
+                    "target_group_id": "DevApplicationFleet",
+                    "asg_infra": {
+                        "asg_infra_id": "DevAutoScalingGroup",
+                        "asg_infra_config": {
+                            "asg_id": "DevAutoScalingGroup",
+                            "instance_type": "t3.micro",
+                            "desired_capacity": 2,
+                            "min_capacity": 1,
+                            "max_capacity": 3
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
