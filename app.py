@@ -6,7 +6,7 @@ import aws_cdk as cdk
 from backend.backend_component import Backend
 
 # Get the environment from an argument or default to 'dev'
-env = os.getenv("ENVIRONMENT", "dev")
+env = os.getenv("environment", "dev")
 
 # Load the appropriate config file
 config_file = f"config/{env}.json"

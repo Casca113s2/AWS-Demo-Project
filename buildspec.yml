@@ -1,0 +1,33 @@
+version: 0.2
+
+env:
+  variables:
+    environment: "dev"
+    destroy: "no"
+phases:
+  install:
+    commands:
+      - sudo yum install python3.9
+      - python3 --version
+      - python3 -m ensurepip --upgrade
+      - python3 -m pip install --upgrade pip
+      - python3 -m pip install --upgrade virtualenv
+      - python3 -m pip install -r requirements.txt
+      - npm install -g aws-cdk
+      - cdk --version
+  pre_build:
+    commands:
+      - cdk synth
+  build:
+    on-failure: CONTINUE
+    commands:
+      - |
+        printenv
+        [[ $destroy == "yes" ]] && exit 1
+        cdk deploy --require-approval never
+  post_build:
+    commands:
+      - |
+        printenv
+        [[ $destroy == "no" ]] && exit 0
+        cdk destroy --force

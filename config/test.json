@@ -11,7 +11,7 @@
                 "network_infra_config": {
                     "vpc": {
                         "vpc_id": "TestVpc",
-                        "cidr": "10.0.0.0/16",
+                        "cidr": "10.1.0.0/16",
                         "max_azs": 3,
                         "nat_gateways": 1,
                         "subnet_configuration": [
@@ -39,10 +39,13 @@
                         "asg_infra_id": "TestAutoScalingGroup",
                         "asg_infra_config": {
                             "asg_id": "TestAutoScalingGroup",
+                            "role_id": "TestEC2Role",
                             "instance_type": "t3.micro",
                             "desired_capacity": 2,
-                            "min_capacity": 1,
-                            "max_capacity": 3
+                            "min_capacity": 2,
+                            "max_capacity": 3,
+                            "cds_bucket_name": "aws-codedeploy-ap-southeast-1",
+                            "region_identifier": "ap-southeast-1"
                         }
                     }
                 }

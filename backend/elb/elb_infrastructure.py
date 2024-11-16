@@ -42,5 +42,5 @@ class LoadBalancerInfra(Construct):
             vpc=vpc,
         )
         listener.add_targets(
-            load_balancer_config["target_group_id"], port=80, targets=[asg.asg]
+            load_balancer_config["target_group_id"], port=8080, targets=[asg.asg]
         )

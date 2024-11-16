@@ -3,7 +3,6 @@ from constructs import Construct
 from backend.network.network_infrastructure import NetworkInfra
 from backend.elb.elb_infrastructure import LoadBalancerInfra
 
-
 class Backend(cdk.Stack):
     def __init__(self, scope: Construct, id_: str, *, backend_config: dict, **kwargs):
         super().__init__(scope, id_, **kwargs)
