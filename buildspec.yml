@@ -2,7 +2,7 @@ version: 0.2
 
 env:
   variables:
-    environment: "prob"
+    environment: "prod"
     destroy: "no"
 phases:
   install:
