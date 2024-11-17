@@ -40,7 +40,7 @@ class AutoScalingGroupInfra(Construct):
             max_capacity=asg_config["max_capacity"],
             role=role,
             update_policy=autoscaling.UpdatePolicy.replacing_update(),
-            health_check=autoscaling.HealthCheck.elb(grace=Duration.seconds(150)),
+            health_check=autoscaling.HealthCheck.elb(grace=Duration.seconds(200)),
             block_devices=[autoscaling.BlockDevice(device_name="/dev/xvda", volume=autoscaling.BlockDeviceVolume.ebs(encrypted=True, volume_size=8))],
         )
 

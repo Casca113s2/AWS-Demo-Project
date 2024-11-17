@@ -43,5 +43,5 @@ class LoadBalancerInfra(Construct):
         )
 
         listener.add_targets(
-            load_balancer_config["target_group_id"], port=8080, targets=[asg.asg], health_check=elbv2.HealthCheck(path="/helloworld", healthy_http_codes="302", enabled=True),
+            load_balancer_config["target_group_id"], port=8080, targets=[asg.asg], health_check=elbv2.HealthCheck(path="/helloworld/", healthy_http_codes="200", port="8080"),
         )
