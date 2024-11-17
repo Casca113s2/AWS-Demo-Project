@@ -2,6 +2,8 @@ from aws_cdk import (
     aws_ec2 as ec2,
     aws_autoscaling as autoscaling,
     aws_iam as iam,
+    aws_ssm as ssm,
+    Duration,
 )
 from constructs import Construct
 
@@ -19,7 +21,9 @@ class AutoScalingGroupInfra(Construct):
             asg_config["role_id"],
             assumed_by=iam.ServicePrincipal("ec2.amazonaws.com"),
             managed_policies=[
-                iam.ManagedPolicy.from_aws_managed_policy_name("AmazonSSMManagedInstanceCore"),
+                iam.ManagedPolicy.from_aws_managed_policy_name(
+                    "AmazonSSMManagedInstanceCore"
+                ),
                 iam.ManagedPolicy.from_aws_managed_policy_name("AmazonS3FullAccess"),
             ],
         )
@@ -35,25 +39,28 @@ class AutoScalingGroupInfra(Construct):
             min_capacity=asg_config["min_capacity"],
             max_capacity=asg_config["max_capacity"],
             role=role,
+            update_policy=autoscaling.UpdatePolicy.replacing_update(),
+            health_check=autoscaling.HealthCheck.elb(grace=Duration.seconds(150)),
         )
 
         # Scaling policies
         self.asg.scale_on_cpu_utilization("CpuScaling", target_utilization_percent=50)
 
+        ssm_parameter = ssm.StringParameter.value_for_string_parameter(
+            self,
+            asg_config["ssm_parameter"]
+        )
         # Add user data
         self.asg.add_user_data(
             f"""
 #!/bin/bash
 
 sudo yum install tomcat10.noarch -y
-sudo yum install ruby -y
-sudo yum install wget -y
 
-cd /home/ec2-user
-wget https://{asg_config["cds_bucket_name"]}.s3.{asg_config["region_identifier"]}.amazonaws.com/latest/install
-chmod +x ./install
-sudo ./install auto
-sudo systemctl start codedeploy-agent
+aws s3 cp s3://demo-appplication-artifact-bucket/artifacts/{ssm_parameter} /home/ec2-user/
+
+mv /home/ec2-user/{ssm_parameter} /var/lib/tomcat10/webapps/helloworld.war
+
 sudo systemctl start tomcat10
             """
         )

@@ -40,10 +40,11 @@
                         "asg_infra_config": {
                             "asg_id": "DevAutoScalingGroup",
                             "role_id": "DevEC2Role",
+                            "ssm_parameter": "/application/dev/helloworld",
                             "instance_type": "t3.micro",
-                            "desired_capacity": 2,
-                            "min_capacity": 2,
-                            "max_capacity": 3,
+                            "desired_capacity": 1,
+                            "min_capacity": 1,
+                            "max_capacity": 1,
                             "cds_bucket_name": "aws-codedeploy-ap-southeast-1",
                             "region_identifier": "ap-southeast-1"
                         }

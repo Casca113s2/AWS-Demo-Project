@@ -40,6 +40,7 @@
                         "asg_infra_config": {
                             "asg_id": "ProdAutoScalingGroup",
                             "role_id": "ProdEC2Role",
+                            "ssm_parameter": "/application/prod/helloworld",
                             "instance_type": "t3.micro",
                             "desired_capacity": 2,
                             "min_capacity": 2,

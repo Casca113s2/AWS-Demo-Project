@@ -4,6 +4,7 @@ import os
 import sys
 import aws_cdk as cdk
 from backend.backend_component import Backend
+import cdk_nag
 
 # Get the environment from an argument or default to 'dev'
 env = os.getenv("environment", "dev")
@@ -25,7 +26,9 @@ Backend(
     backend_config=config["backend"]["backend_config"],
     env=cdk.Environment(
         account=config["environment"]["account"], region=config["environment"]["region"]
-    ),  # Fix: account num expose
+    ),
 )
+
+#cdk.Aspects.of(app).add(cdk_nag.AwsSolutionsChecks(verbose=True))
 
 app.synth()
