@@ -41,6 +41,7 @@ class AutoScalingGroupInfra(Construct):
             role=role,
             update_policy=autoscaling.UpdatePolicy.replacing_update(),
             health_check=autoscaling.HealthCheck.elb(grace=Duration.seconds(150)),
+            block_devices=[autoscaling.BlockDevice(device_name="/dev/xvda", volume=autoscaling.BlockDeviceVolume.ebs(encrypted=True, volume_size=8))],
         )
 
         # Scaling policies
