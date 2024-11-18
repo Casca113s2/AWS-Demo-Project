@@ -25,7 +25,10 @@
                                 "subnet_type": "PRIVATE_WITH_EGRESS",
                                 "cidr_mask": 24
                             }
-                        ]
+                        ],
+                        "log_group_id": "ProdVpcFlowLogGroup",
+                        "log_role_id": "ProdVpcFlowLogRole",
+                        "flow_log_id": "ProdVpcFlowLog"
                     }
                 }
             },
@@ -45,10 +48,12 @@
                             "desired_capacity": 2,
                             "min_capacity": 2,
                             "max_capacity": 5,
-                            "cds_bucket_name": "aws-codedeploy-ap-southeast-1",
-                            "region_identifier": "ap-southeast-1"
+                            "region_identifier": "ap-southeast-1",
+                            "sns_topic": "ProdAsgSNS",
+                            "display_name": "ProdSNSSubscription"
                         }
-                    }
+                    },
+                    "security_group_id": "ProdWebServerSG"
                 }
             }
         }

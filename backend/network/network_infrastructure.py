@@ -1,4 +1,6 @@
 import aws_cdk.aws_ec2 as ec2
+from aws_cdk import aws_logs as logs
+from aws_cdk import aws_iam as iam
 from constructs import Construct
 from aws_cdk import CfnOutput
 
@@ -30,7 +32,27 @@ class NetworkInfra(Construct):
                     cidr_mask=network_infra_config["vpc"]["subnet_configuration"][1]["cidr_mask"]
                 ),
             ]
-        )   
+        )
+
+        # Create a CloudWatch log group for the Flow Logs
+        log_group = logs.LogGroup(
+            self,
+            network_infra_config["vpc"]["log_group_id"],
+            retention=logs.RetentionDays.ONE_WEEK,
+        )
+
+        # Create an IAM Role for the Flow Logs
+        log_role = iam.Role(
+            self,
+            network_infra_config["vpc"]["log_role_id"],
+            assumed_by=iam.ServicePrincipal("vpc-flow-logs.amazonaws.com"),
+        )
+
+        # Add the Flow Log to the VPC
+        self.vpc.add_flow_log(
+            network_infra_config["vpc"]["flow_log_id"],
+            destination=ec2.FlowLogDestination.to_cloud_watch_logs(log_group, log_role)
+        )
 
         # Output the VpcId
         vpc_id = network_infra_config["vpc"]["vpc_id"]

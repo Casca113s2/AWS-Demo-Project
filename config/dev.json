@@ -25,7 +25,10 @@
                                 "subnet_type": "PRIVATE_WITH_EGRESS",
                                 "cidr_mask": 24
                             }
-                        ]
+                        ],
+                        "log_group_id": "DevVpcFlowLogGroup",
+                        "log_role_id": "DevVpcFlowLogRole",
+                        "flow_log_id": "DevVpcFlowLog"
                     }
                 }
             },
@@ -45,10 +48,12 @@
                             "desired_capacity": 1,
                             "min_capacity": 1,
                             "max_capacity": 1,
-                            "cds_bucket_name": "aws-codedeploy-ap-southeast-1",
-                            "region_identifier": "ap-southeast-1"
+                            "region_identifier": "ap-southeast-1",
+                            "sns_topic": "DevAsgSNS",
+                            "display_name": "DevSNSSubscription"
                         }
-                    }
+                    },
+                    "security_group_id": "DevWebServerSG"
                 }
             }
         }

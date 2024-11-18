@@ -25,7 +25,10 @@
                                 "subnet_type": "PRIVATE_WITH_EGRESS",
                                 "cidr_mask": 24
                             }
-                        ]
+                        ],
+                        "log_group_id": "TestVpcFlowLogGroup",
+                        "log_role_id": "TestVpcFlowLogRole",
+                        "flow_log_id": "TestVpcFlowLog"
                     }
                 }
             },
@@ -44,10 +47,12 @@
                             "desired_capacity": 2,
                             "min_capacity": 2,
                             "max_capacity": 3,
-                            "cds_bucket_name": "aws-codedeploy-ap-southeast-1",
-                            "region_identifier": "ap-southeast-1"
+                            "region_identifier": "ap-southeast-1",
+                            "sns_topic": "TestAsgSNS",
+                            "display_name": "TestSNSSubscription"
                         }
-                    }
+                    },
+                    "security_group_id": "TestWebServerSG"
                 }
             }
         }

@@ -3,6 +3,7 @@ from aws_cdk import (
     aws_autoscaling as autoscaling,
     aws_iam as iam,
     aws_ssm as ssm,
+    aws_sns as sns,
     Duration,
 )
 from constructs import Construct
@@ -15,17 +16,28 @@ class AutoScalingGroupInfra(Construct):
     ) -> None:
         super().__init__(scope, construct_id)
 
-        # Define the IAM role for the EC2 instances to allow Session Manager access
-        role = iam.Role(
+        role = iam.Role.from_role_arn(
+            self, asg_config["role_id"], "arn:aws:iam::259642033136:role/S3GetPut"
+        )
+
+        topic = sns.Topic(
             self,
-            asg_config["role_id"],
-            assumed_by=iam.ServicePrincipal("ec2.amazonaws.com"),
-            managed_policies=[
-                iam.ManagedPolicy.from_aws_managed_policy_name(
-                    "AmazonSSMManagedInstanceCore"
-                ),
-                iam.ManagedPolicy.from_aws_managed_policy_name("AmazonS3FullAccess"),
-            ],
+            asg_config["sns_topic"],
+            display_name=asg_config["display_name"],
+            enforce_ssl=True,
+        )
+
+        topic.add_to_resource_policy(
+            iam.PolicyStatement(
+                principals=[iam.ServicePrincipal("autoscaling.amazonaws.com")],
+                actions=["sns:Publish"],
+                resources=[topic.topic_arn],
+            )
+        )
+
+        notification_configuration = autoscaling.NotificationConfiguration(
+            topic=topic,
+            scaling_events=autoscaling.ScalingEvents.ALL,
         )
 
         # Define the Auto Scaling Group
@@ -41,15 +53,22 @@ class AutoScalingGroupInfra(Construct):
             role=role,
             update_policy=autoscaling.UpdatePolicy.replacing_update(),
             health_check=autoscaling.HealthCheck.elb(grace=Duration.seconds(200)),
-            block_devices=[autoscaling.BlockDevice(device_name="/dev/xvda", volume=autoscaling.BlockDeviceVolume.ebs(encrypted=True, volume_size=8))],
+            block_devices=[
+                autoscaling.BlockDevice(
+                    device_name="/dev/xvda",
+                    volume=autoscaling.BlockDeviceVolume.ebs(
+                        encrypted=True, volume_size=8
+                    ),
+                )
+            ],
+            notifications=[notification_configuration],
         )
 
         # Scaling policies
         self.asg.scale_on_cpu_utilization("CpuScaling", target_utilization_percent=50)
 
         ssm_parameter = ssm.StringParameter.value_for_string_parameter(
-            self,
-            asg_config["ssm_parameter"]
+            self, asg_config["ssm_parameter"]
         )
         # Add user data
         self.asg.add_user_data(

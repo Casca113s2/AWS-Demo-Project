@@ -29,6 +29,6 @@ Backend(
     ),
 )
 
-#cdk.Aspects.of(app).add(cdk_nag.AwsSolutionsChecks(verbose=True))
+cdk.Aspects.of(app).add(cdk_nag.AwsSolutionsChecks(verbose=True))
 
 app.synth()
