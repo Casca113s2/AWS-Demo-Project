@@ -1,7 +1,7 @@
 
 # Welcome to your CDK Python project!
 
-Dev document ver 7
+Dev document ver 6
 
 This is a blank project for CDK development with Python.
 
