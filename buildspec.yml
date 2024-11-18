@@ -15,7 +15,7 @@ phases:
       - python3 -m pip install -r requirements.txt
       - npm install -g aws-cdk
       - cdk --version
-      - aws ssm put-parameter --name "/application/dev/latestcommitid" --type "String" --value "$CODEBUILD_RESOLVED_SOURCE_VERSION" --overwrite
+      - aws ssm put-parameter --name "/application/test/latestcommitid" --type "String" --value "$CODEBUILD_RESOLVED_SOURCE_VERSION" --overwrite
   pre_build:
     commands:
       - cdk synth

@@ -76,14 +76,11 @@ class AutoScalingGroupInfra(Construct):
 #!/bin/bash
 
 sudo yum install tomcat10.noarch -y
-sudo yum install ruby -y
-sudo yum install wget -y
 
-cd /home/ec2-user
-wget https://{asg_config["cds_bucket_name"]}.s3.{asg_config["region_identifier"]}.amazonaws.com/latest/install
-chmod +x ./install
-sudo ./install auto
-sudo systemctl start codedeploy-agent
+aws s3 cp s3://demo-appplication-artifact-bucket/artifacts/{ssm_parameter} /home/ec2-user/
+
+mv /home/ec2-user/{ssm_parameter} /var/lib/tomcat10/webapps/helloworld.war
+
 sudo systemctl start tomcat10
             """
         )
